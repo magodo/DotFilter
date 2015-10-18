@@ -137,14 +137,14 @@ def __dotReConstructor(pairShow):
     """
     content = "digraph G{\n"
     for pair in pairShow:
-        content += "    %s -> %s" %(pair.getSourceNode(), pair.getDestNode())
+        content += "    \"%s\"->\"%s\"" %(pair.getSourceNode(), pair.getDestNode())
         dictAttr = pair.getAttr()
         if dictAttr:
             content += " ["
             for key in dictAttr:
-                content += "%s = \"%s\", " %(key, dictAttr[key])
+                content += "%s=\"%s\", " %(key, dictAttr[key])
             content = content[:-2] + "]"
-        content += "\n"
+        content += ";\n"
     content += "}\n"
     return content
 

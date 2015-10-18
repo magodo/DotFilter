@@ -38,7 +38,7 @@ class DotPair(object):
             attr = attr.strip()
             key, sep, value = attr.partition("=")
             key = key.strip()
-            value = value.strip("\" ")   # Strip '"'(double quote) and ' '(space)
+            value = value.strip("\" \t")   # Strip '"'(double quote) and ' '(space)
             self.attr[key] = value
 
     def __checkIsNode(self, line):
@@ -59,7 +59,7 @@ class DotPair(object):
         :param str line:        Content of line
         """
         line = line[:line.index("->")]
-        self.sourceNode = line.strip("\" ")
+        self.sourceNode = line.strip("\" \t")
 
     def __getDestNode(self, line):
         """
@@ -74,7 +74,7 @@ class DotPair(object):
         if "[" in line:
             endIndex = line.index('[')
         line = line[startIndex:endIndex]
-        self.destNode = line.strip("\" ")
+        self.destNode = line.strip("\" \t")
 
     def getSourceNode(self):
         """
