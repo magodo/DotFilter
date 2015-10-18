@@ -10,13 +10,13 @@
 
 import argparse
 import sys
-import viewer
+import lib.viewer as viewer
 
 parser = argparse.ArgumentParser(prog = "Viewer for systemd dot file")
 parser.add_argument("input")
 parser.add_argument("--from-node", dest="fromNode", default="")
 parser.add_argument("--to-node", dest="toNode", default="")
-parser.add_argument("--filter", nargs="*")
+parser.add_argument("--filter", dest="filter", nargs="*")
 parser.add_argument("--output", "-o", dest="output", default="./output.dot")
 Args = parser.parse_args()
 sys.exit(viewer.view(Args.input, Args.fromNode, Args.toNode, Args.filter, Args.output))

@@ -22,61 +22,77 @@ def view(inputFile, fromNode = "", toNode = "", filters = [], outputFile = ""):
     :param list filters:        List of filter option to just show nodes with these attributes
     :param str outputFile:      Output dot file
     """
-
-    pairFull = set()
-
     # Parse file
-    cnt = 1
+    pairFull = set()
+    ID = 1
     with open(inputFile, 'rU') as f:
         for line in f:
-            dotPair = parser.DotPair(cnt)
+            dotPair = parser.DotPair(ID)
             if dotPair.parseLine(line):
                 pairFull.add(dotPair)
-                cnt += 1
+                ID += 1
 
-
-    pairShowTo = __getToPair(pairFull, toNode)
-    pairShowFrom = __getFromPair(pairFull, fromNode)
+    pairShowTo = __getToPair(pairFull, toNode, filters)
+    pairShowFrom = __getFromPair(pairFull, fromNode, filters)
     pairShow = pairShowFrom.intersection(pairShowTo)
+    # Reconstruct dot file
     content = __dotReConstructor(pairShow)
     __populateDotFile(content, outputFile)
 
-def __getFromPair(pairFull, fromNode):
+def __getFromPair(pairFull, fromNode, filters):
     """
-    Get set of pair which are on path from "From Node". If "From Node" is not set, return full set of DotPair.
+    Get set of pair which are on path from "From Node" and conform to filters.
 
     :param set pairFull:        Full set of DotPair
     :param str fromNode:        From which node does this viewer will present
+    :param list filters:        List of filter option to just show nodes with these attributes
     :return set:                Set of DotPair on path to "To Node"
     """
+    pairShow = set()
+    pairTemp = set()
+    # All path
     if not fromNode:
         print "From each node..."
-        return pairFull
+        for pair in pairFull:
+            # Check filter
+            if (filters and __isFilteredDot(pair, filters)) or (not filters):
+                pairShow.add(pair)
+        return pairShow
+    # Only path from 'fromNode'
     nodeSource = {fromNode}
-    pairTemp = set()
-    pairShow = set()
     while nodeSource:
         pairShow_ori = copy.copy(pairShow)
         pairTemp = copy.copy(pairFull)
         for pair in pairFull:
-            if pair.getSourceNode() in nodeSource:
-                pairShow.add(pair)
-                pairTemp.remove(pair)
+            # Check filter
+            if (filters and __isFilteredDot(pair, filters)) or (not filters):
+                if pair.getSourceNode() in nodeSource:
+                    pairShow.add(pair)
+                    pairTemp.remove(pair)
         pairFull = pairTemp
         nodeSource = {pair.getDestNode() for pair in pairShow.difference(pairShow_ori)}
     return pairShow
 
-def __getToPair(pairFull, toNode):
+def __getToPair(pairFull, toNode, filters):
     """
-    Get set of pair which are on path to "To Node". If "To Node" is not set, return full set of DotPair.
+    Get set of pair which are on path to "To Node" and conform to filters.
 
     :param set pairFull:        Full set of DotPair
     :param str toNode:          To which node does this viewer will present
+    :param list filters:        List of filter option to just show nodes with these attributes
     :return set:                Set of DotPair on path to "To Node"
     """
+    pairShow = set()
+    pairTemp = set()
+    # All path
     if not toNode:
         print "To each node..."
-        return pairFull
+        for pair in pairFull:
+            # Check filter
+            if (filters and __isFilteredDot(pair, filters)) or (not filters):
+                pairShow.add(pair)
+        return pairShow
+    # Only path to 'toNode'
     nodeDest = {toNode}
     pairTemp = set()
     pairShow = set()
@@ -84,12 +100,33 @@ def __getToPair(pairFull, toNode):
         pairShow_ori = copy.copy(pairShow)
         pairTemp = copy.copy(pairFull)
         for pair in pairFull:
-            if pair.getDestNode() in nodeDest:
-                pairShow.add(pair)
-                pairTemp.remove(pair)
+            # Check filter
+            if (filters and __isFilteredDot(pair, filters)) or (not filters):
+                if pair.getDestNode() in nodeDest:
+                    pairShow.add(pair)
+                    pairTemp.remove(pair)
         pairFull = pairTemp
         nodeDest = {pair.getSourceNode() for pair in pairShow.difference(pairShow_ori)}
     return pairShow
+
+def __isFilteredDot(pair, filters):
+    """
+    Check if a certain DotPair in filter.
+
+    :param DotPair:             DotPair to be checked
+    :param list filters:        List of filter option to just show nodes with these attributes
+    :return bool:               True if dot is confronted to filter. Else, return False
+    """
+    __DictAttr__ = {"conflict": "red", "dependency": "green", "require": "grey66", "order": "black"}
+    dictAttr = pair.getAttr()
+    if "color" not in dictAttr:
+        color = "black"
+    else:
+        color = dictAttr["color"]
+    filters = [__DictAttr__[case] for case in filters]
+    if color not in filters:
+        return False
+    return True
 
 def __dotReConstructor(pairShow):
     """
@@ -125,8 +162,4 @@ def __populateDotFile(content, outputFile):
 
 if __name__ == "__main__":
     view("demo.dot", toNode = "make_string", fromNode = "main", outputFile = "./output.dot")
-
-
-
-
 

@@ -1,14 +1,13 @@
 digraph G {
-    size = "4,4";
-    main [shape=box];
-    main -> parse [weight = 8];
-    parse -> execute;
+    main -> parse [color = "red"];
+    main -> parse [color = "green"];
+    main -> parse;
+    parse -> execute [color = "red"];
     main -> init [style = "dotted"];
     main -> cleanup;
     execute -> make_string; 
     execute -> printf;
     init -> make_string;
-    edge [color = "blue"]; 
     main -> printf [style="bold", label="100 times"];
     execute -> compare [shape=polygon, skew=0, distortion = 0.0, peripheries=3, color=".7 .3 1.0"]; 
 }
