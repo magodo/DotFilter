@@ -117,7 +117,7 @@ def __isFilteredDot(pair, filters):
     :param list filters:        List of filter option to just show nodes with these attributes
     :return bool:               True if dot is confronted to filter. Else, return False
     """
-    __DictAttr__ = {"conflict": "red", "dependency": "green", "require": "grey66", "order": "black"}
+    __DictAttr__ = {"conflicts": "red", "after": "green", "wants": "grey66", "requires": "black", "requisite": "darkblue"}
     dictAttr = pair.getAttr()
     if "color" not in dictAttr:
         color = "black"
