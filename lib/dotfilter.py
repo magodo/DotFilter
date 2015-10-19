@@ -4,7 +4,7 @@
 #########################################################################
 # Author: Zhaoting Weng
 # Created Time: Sun 18 Oct 2015 06:49:21 PM CST
-# File Name: viewer.py
+# File Name: dotfilter.py
 # Description:
 #########################################################################
 
@@ -12,9 +12,9 @@ import parser
 import os
 import copy
 
-def view(inputFile, fromNode = "", toNode = "", filters = [], outputFile = ""):
+def filt(inputFile, fromNode = "", toNode = "", filters = [], outputFile = ""):
     """
-    View dot file.
+    filter dot file.
 
     :parapm str inputFile:      Input dot file
     :param str fromNode:        From which node does this viewer will present
@@ -161,5 +161,5 @@ def __populateDotFile(content, outputFile):
 
 
 if __name__ == "__main__":
-    view("demo.dot", toNode = "make_string", fromNode = "main", outputFile = "./output.dot")
+    filt("demo.dot", toNode = "make_string", fromNode = "main", outputFile = "./output.dot")
 
