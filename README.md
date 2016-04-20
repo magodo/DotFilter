@@ -1,11 +1,10 @@
 DotFilter: a simple filter to extract interested part of dot file
 ================================================================
 
-
 - [Intro](#intro)
 - [Installation](#installation)
-- [User Guide](#user-guide)
-- [Options](#options)
+- [User Guide - bitbake](#user-guide---bitbake)
+- [User Guide - systemd](#user-guide---systemd)
 - [License](#license)
 
 
