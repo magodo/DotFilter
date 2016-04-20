@@ -1,5 +1,0 @@
-digraph G{
-    "focussed.target"->"oip-cpi-mandatory.target" [color="grey66"];
-    "basic.target"->"sockets.target" [color="grey66"];
-    "oip-cpi-mandatory.target"->"basic.target" [color="grey66"];
-}

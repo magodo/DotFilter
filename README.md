@@ -14,17 +14,22 @@ Intro
 -----
 DotFilter is a simple tool for filter out interested part of a complicated dot file. 
 
-The input to DotFilter is an existed dot file;
+Currently supported dot file origins are from:
 
-The output from DotFilter is a **customized** dot file;
+* [bitbake dot][]
+* [systemd-analyze dot][]
+
+Each one has a correspoding laucher script under **bin** directory.
+
+The input to script is an existed **raw** dot file;
+
+The output is a **filtered** dot file;
 
 DotFilter allows you to do several kinds of customization:
 
-- Indicate from which node to view
-- Indicate to which node to view
+- Indicate from which node to view(regexp supported)
+- Indicate to which node to view(regexp supported)
 - Indicate nodes with which attribute to view
-
-Currently, it only supports customization for dot file exported by [systemd-analyze dot][]. 
 
 Installation
 ------------
@@ -37,8 +42,49 @@ Firstly, make sure you have graphviz installed:
 
 Secondly, copy script to any location where you have access right.
 
-User Guide
+User Guide - bitbake
 -----------
+
+###Get Input File
+Run following command in devkits to get input file:
+
+    bitbake -g <target-name>
+
+###Extract intrested part of dot file
+Run following command to extract interested part of dot file and output a customized version:
+
+    usage: bitbake_filter.py           [-h] [--from-node FROMNODE]
+                                       [--to-node TONODE]
+                                       [--filter [{rdepends,depends} [{rdepends,depends} ...]]]
+                                       [--output OUTPUT]
+                                       input
+
+    positional arguments:
+      input
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --from-node FROMNODE  From which node to extract(regexp supported)
+      --to-node TONODE      To which node to extract(regexp supported)
+      --filter [{rdepends,depends} [{rdepends,depends} ...]]
+                            Which kind of transitions do you want to view
+      --output OUTPUT, -o OUTPUT
+                            Output filtered dot file
+
+E.g. `./bitbake_filter.py --from-node ".*conn-connectivity.*app.*" --to-node ".*.hmi.*" --filter depends rdepends --output ../test/pn-depends_output.dot ../test/pn-depends.dot`
+
+You could then get a dot file `../test/pn-depends_output.dot` which contains only nodes started from nodes match pattern `.*conn-connectivity.*app.*` and to nodes match pattern `.*.hmi.*` and only show information about `depends` and `rdepends`.
+
+###Convert customize dot to svg
+Run following command to convert customized dot file to human-readable picture:
+
+    dot -Tsvg <input dot file> > -o <output dot file>
+
+You can use `eog` to open this picture. This time you can get clearer picture.
+
+User Guide - systemd
+-----------
+
 ###Get Input File
 Run following command on **systemd-init** system to get input file:
 
@@ -51,44 +97,36 @@ Run following command to convert to human-readable picture:
 
 You can use `eog` to open this picture, but you will find it's quite complicated.
 
-###Use SystemdViewr.py to extract intrested part of dot file
+###Extract intrested part of dot file
 Run following command to extract interested part of dot file and output a customized version:
 
-    ./SystemdFilter.py input
+    usage: systemd_filter.py [-h] [--from-node FROMNODE] [--to-node TONODE]
+                             [--filter [{conflicts,after,wants,requires,requisite} [{conflicts,after,wants,requires,requisite} ...]]]
+                             [--output OUTPUT]
+                             input
 
-                     -o output 
+    positional arguments:
+      input
 
-                     [--from-node FROMNODE]
+    optional arguments:
+      -h, --help            show this help message and exit
+      --from-node FROMNODE  From which node to extract(regexp supported)
+      --to-node TONODE      To which node to extract(regexp supported)
+      --filter [{conflicts,after,wants,requires,requisite} [{conflicts,after,wants,requires,requisite} ...]]
+                            Which kind of transitions do you want to view
+      --output OUTPUT, -o OUTPUT
+                            Output filtered dot file
 
-                     [--to-node TONODE]
+E.g. `./systemd_filter.py --from-node "lazy.target" --filter wants requires --output ../test/systemd_out.dot ../test/systemd.dot`
 
-                     [--output OUTPUT] 
-
-                     [--filter [{conflicts,after,wants,requires,requisite} [{conflicts,after,wants,requires,requisite} ...]]]
-
-E.g. `./SystemdFilter.py test/systemd.dot -o test/output.dot --from-node focussed.target --filter wants`
-
-You could then get a dot file `test/output.dot` which contains only nodes started from `focussed.target` and only show information about `wants`.
-
+You could then get a dot file `../test/systemd_out.dot` which contains only nodes started from `lazy.target` and only show information about `wants` and `requires`.
 
 ###Convert customize dot to svg
 Run following command to convert customized dot file to human-readable picture:
 
-    dot -Tsvg systemd_customized.dot -o systemd_customized.svg
+    dot -Tsvg <input dot file> > -o <output dot file>
 
 You can use `eog` to open this picture. This time you can get clearer picture.
-
-Options
--------
-
-    --from-node NODENAME        Indicate DotFilter from which node to construct. Could be combined with  --to-node  .
-
-    --to-node NODENAME          Indicate DotFilter to which node to construct. Could be combined with  --from-node  .
-
-    --output FILENAME           Indicate output file name. Output _./output.dot_ by default.
-
-    --filter ATTR_LIST          A list of space separated interested attributes to extract.
-
 
 License
 -------
@@ -96,5 +134,6 @@ License
 This software is licensed under the [GPL v3 license][gpl].
 
 
+[bitbake dot]: http://www.yoctoproject.org/docs/2.0.1/ref-manual/ref-manual.html#usingpoky-debugging-dependencies
 [systemd-analyze dot]: http://www.freedesktop.org/software/systemd/man/systemd-analyze.html
 [gpl]: http://www.gnu.org/copyleft/gpl.html

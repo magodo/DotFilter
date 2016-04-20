@@ -4,13 +4,13 @@
 #########################################################################
 # Author: Zhaoting Weng
 # Created Time: Sun 18 Oct 2015 01:12:45 PM CST
-# File Name: parser.py
+# File Name: dot_pair.py
 # Description:
 #########################################################################
 
-class DotPair(object):
+class dot_pair(object):
     """
-    This class is for parsing each line of dot file and get a DotPair instnace.
+    This class is for parsing each line of dot file and get a dot_pair instnace.
     """
     def __init__(self, ID):
         """
@@ -18,7 +18,7 @@ class DotPair(object):
 
         :param int ID:          Id number to identify each pair
         """
-        super(DotPair, self).__init__()
+        super(dot_pair, self).__init__()
         self.ID = ID
         self.isNode = False
         self.sourceNode = ""
@@ -107,6 +107,7 @@ class DotPair(object):
         :param str line:        Content of line
         :param bool    :        True if this line defines dot pair; Otherwise return 0
         """
+        line = line.strip()
         self.__checkIsNode(line)
         if not self.isNode:
             return False
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     line1 = 'execute -> compare [shape=polygon, skew=0, distortion = 0.0, peripheries=3, color=".7 .3 1.0"]'
     line2 = '"lazy.target"->"ovip-core-ssw-security-efsv.service" [color="green"];'
     for line in [line1, line2]:
-        inst = DotPair()
+        inst = dot_pair()
         if inst.parseLine(line):
             print "Source: %s\nDest: %s" %(inst.getSourceNode(),inst.getDestNode())
             attrs = inst.getAttr()
