@@ -44,12 +44,14 @@ Secondly, copy script to any location where you have access right.
 User Guide - bitbake
 -----------
 
-###Get Input File
+### Get Input File
+
 Run following command in devkits to get input file:
 
     bitbake -g <target-name>
 
-###Extract intrested part of dot file
+### Extract intrested part of dot file
+
 Run following command to extract interested part of dot file and output a customized version:
 
     usage: bitbake_filter.py           [-h] [--from-node FROMNODE]
@@ -74,7 +76,8 @@ E.g. `./bitbake_filter.py --from-node ".*conn-connectivity.*app.*" --to-node ".*
 
 You could then get a dot file `../test/pn-depends_output.dot` which contains only nodes started from nodes match pattern `.*conn-connectivity.*app.*` and to nodes match pattern `.*.hmi.*` and only show information about `depends` and `rdepends`.
 
-###Convert customize dot to svg
+### Convert customize dot to svg
+
 Run following command to convert customized dot file to human-readable picture:
 
     dot -Tsvg <input dot file> > -o <output dot file>
@@ -84,19 +87,22 @@ You can use `eog` to open this picture. This time you can get clearer picture.
 User Guide - systemd
 -----------
 
-###Get Input File
+### Get Input File
+
 Run following command on **systemd-init** system to get input file:
 
     systemd-analyze dot > systemd.dot
 
-###Convert dot to svg
+### Convert dot to svg
+
 Run following command to convert to human-readable picture:
 
     dot -Tsvg systemd.dot -o systemd.svg 
 
 You can use `eog` to open this picture, but you will find it's quite complicated.
 
-###Extract intrested part of dot file
+### Extract intrested part of dot file
+
 Run following command to extract interested part of dot file and output a customized version:
 
     usage: systemd_filter.py [-h] [--from-node FROMNODE] [--to-node TONODE]
@@ -120,7 +126,8 @@ E.g. `./systemd_filter.py --from-node "lazy.target" --filter wants requires --ou
 
 You could then get a dot file `../test/systemd_out.dot` which contains only nodes started from `lazy.target` and only show information about `wants` and `requires`.
 
-###Convert customize dot to svg
+### Convert customize dot to svg
+
 Run following command to convert customized dot file to human-readable picture:
 
     dot -Tsvg <input dot file> > -o <output dot file>
